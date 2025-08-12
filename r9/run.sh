@@ -1,6 +1,8 @@
 #!/bin/bash
 
 CPU="r9"
+#CPU="rt"
+#CPU="i7"
 # Check if correct number of arguments provided
 if [ $# -ne 3 ]; then
     echo "Usage: $0 <M> <N> <K>"
