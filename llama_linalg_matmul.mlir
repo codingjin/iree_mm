@@ -1,0 +1,155 @@
+// (1) 4096x4096 × 4096x128 = 4096x128
+// Expected result: 1.0 × 0.4 × 4096 = 1638.4
+func.func @matmul_4096x128x4096_f32_f32() {
+  %lhs = util.unfoldable_constant dense<1.0> : tensor<4096x4096xf32>
+  %rhs = util.unfoldable_constant dense<0.4> : tensor<4096x128xf32>
+  %c0 = arith.constant 0.0 : f32
+  %init = tensor.empty() : tensor<4096x128xf32>
+  %CC = linalg.fill ins(%c0 : f32) outs(%init : tensor<4096x128xf32>) -> tensor<4096x128xf32>
+  %D = linalg.matmul ins(%lhs, %rhs: tensor<4096x4096xf32>, tensor<4096x128xf32>)
+                    outs(%CC: tensor<4096x128xf32>) -> tensor<4096x128xf32>
+  return
+}
+
+// (2) 128x4096 × 4096x8192 = 128x8192
+// Expected result: 1.0 × 0.4 × 4096 = 1638.4
+func.func @matmul_128x8192x4096_f32_f32() {
+  %lhs = util.unfoldable_constant dense<1.0> : tensor<128x4096xf32>
+  %rhs = util.unfoldable_constant dense<0.4> : tensor<4096x8192xf32>
+  %c0 = arith.constant 0.0 : f32
+  %init = tensor.empty() : tensor<128x8192xf32>
+  %CC = linalg.fill ins(%c0 : f32) outs(%init : tensor<128x8192xf32>) -> tensor<128x8192xf32>
+  %D = linalg.matmul ins(%lhs, %rhs: tensor<128x4096xf32>, tensor<4096x8192xf32>)
+                    outs(%CC: tensor<128x8192xf32>) -> tensor<128x8192xf32>
+  return
+}
+
+// (3) 128x8192 × 8192x4096 = 128x4096
+// Expected result: 1.0 × 0.4 × 8192 = 3276.8
+func.func @matmul_128x4096x8192_f32_f32() {
+  %lhs = util.unfoldable_constant dense<1.0> : tensor<128x8192xf32>
+  %rhs = util.unfoldable_constant dense<0.4> : tensor<8192x4096xf32>
+  %c0 = arith.constant 0.0 : f32
+  %init = tensor.empty() : tensor<128x4096xf32>
+  %CC = linalg.fill ins(%c0 : f32) outs(%init : tensor<128x4096xf32>) -> tensor<128x4096xf32>
+  %D = linalg.matmul ins(%lhs, %rhs: tensor<128x8192xf32>, tensor<8192x4096xf32>)
+                    outs(%CC: tensor<128x4096xf32>) -> tensor<128x4096xf32>
+  return
+}
+
+// (4) 4096x4096 × 4096x4096 = 4096x4096
+// Expected result: 1.0 × 0.4 × 4096 = 1638.4
+func.func @matmul_4096x4096x4096_f32_f32() {
+  %lhs = util.unfoldable_constant dense<1.0> : tensor<4096x4096xf32>
+  %rhs = util.unfoldable_constant dense<0.4> : tensor<4096x4096xf32>
+  %c0 = arith.constant 0.0 : f32
+  %init = tensor.empty() : tensor<4096x4096xf32>
+  %CC = linalg.fill ins(%c0 : f32) outs(%init : tensor<4096x4096xf32>) -> tensor<4096x4096xf32>
+  %D = linalg.matmul ins(%lhs, %rhs: tensor<4096x4096xf32>, tensor<4096x4096xf32>)
+                    outs(%CC: tensor<4096x4096xf32>) -> tensor<4096x4096xf32>
+  return
+}
+
+// (5) 4095x4095 × 4095x127 = 4095x127
+// Expected result: 1.0 × 0.4 × 4095 = 1638.0
+func.func @matmul_4095x127x4095_f32_f32() {
+  %lhs = util.unfoldable_constant dense<1.0> : tensor<4095x4095xf32>
+  %rhs = util.unfoldable_constant dense<0.4> : tensor<4095x127xf32>
+  %c0 = arith.constant 0.0 : f32
+  %init = tensor.empty() : tensor<4095x127xf32>
+  %CC = linalg.fill ins(%c0 : f32) outs(%init : tensor<4095x127xf32>) -> tensor<4095x127xf32>
+  %D = linalg.matmul ins(%lhs, %rhs: tensor<4095x4095xf32>, tensor<4095x127xf32>)
+                    outs(%CC: tensor<4095x127xf32>) -> tensor<4095x127xf32>
+  return
+}
+
+// (6) 127x4095 × 4095x8191 = 127x8191
+// Expected result: 1.0 × 0.4 × 4095 = 1638.0
+func.func @matmul_127x8191x4095_f32_f32() {
+  %lhs = util.unfoldable_constant dense<1.0> : tensor<127x4095xf32>
+  %rhs = util.unfoldable_constant dense<0.4> : tensor<4095x8191xf32>
+  %c0 = arith.constant 0.0 : f32
+  %init = tensor.empty() : tensor<127x8191xf32>
+  %CC = linalg.fill ins(%c0 : f32) outs(%init : tensor<127x8191xf32>) -> tensor<127x8191xf32>
+  %D = linalg.matmul ins(%lhs, %rhs: tensor<127x4095xf32>, tensor<4095x8191xf32>)
+                    outs(%CC: tensor<127x8191xf32>) -> tensor<127x8191xf32>
+  return
+}
+
+// (7) 127x8191 × 8191x4095 = 127x4095
+// Expected result: 1.0 × 0.4 × 8191 = 3276.4
+func.func @matmul_127x4095x8191_f32_f32() {
+  %lhs = util.unfoldable_constant dense<1.0> : tensor<127x8191xf32>
+  %rhs = util.unfoldable_constant dense<0.4> : tensor<8191x4095xf32>
+  %c0 = arith.constant 0.0 : f32
+  %init = tensor.empty() : tensor<127x4095xf32>
+  %CC = linalg.fill ins(%c0 : f32) outs(%init : tensor<127x4095xf32>) -> tensor<127x4095xf32>
+  %D = linalg.matmul ins(%lhs, %rhs: tensor<127x8191xf32>, tensor<8191x4095xf32>)
+                    outs(%CC: tensor<127x4095xf32>) -> tensor<127x4095xf32>
+  return
+}
+
+// (8) 4095x4095 × 4095x4095 = 4095x4095
+// Expected result: 1.0 × 0.4 × 4095 = 1638.0
+func.func @matmul_4095x4095x4095_f32_f32() {
+  %lhs = util.unfoldable_constant dense<1.0> : tensor<4095x4095xf32>
+  %rhs = util.unfoldable_constant dense<0.4> : tensor<4095x4095xf32>
+  %c0 = arith.constant 0.0 : f32
+  %init = tensor.empty() : tensor<4095x4095xf32>
+  %CC = linalg.fill ins(%c0 : f32) outs(%init : tensor<4095x4095xf32>) -> tensor<4095x4095xf32>
+  %D = linalg.matmul ins(%lhs, %rhs: tensor<4095x4095xf32>, tensor<4095x4095xf32>)
+                    outs(%CC: tensor<4095x4095xf32>) -> tensor<4095x4095xf32>
+  return
+}
+
+// (9) 4097x4097 × 4097x129 = 4097x129
+// Expected result: 1.0 × 0.4 × 4097 = 1638.8
+func.func @matmul_4097x129x4097_f32_f32() {
+  %lhs = util.unfoldable_constant dense<1.0> : tensor<4097x4097xf32>
+  %rhs = util.unfoldable_constant dense<0.4> : tensor<4097x129xf32>
+  %c0 = arith.constant 0.0 : f32
+  %init = tensor.empty() : tensor<4097x129xf32>
+  %CC = linalg.fill ins(%c0 : f32) outs(%init : tensor<4097x129xf32>) -> tensor<4097x129xf32>
+  %D = linalg.matmul ins(%lhs, %rhs: tensor<4097x4097xf32>, tensor<4097x129xf32>)
+                    outs(%CC: tensor<4097x129xf32>) -> tensor<4097x129xf32>
+  return
+}
+
+// (10) 129x4097 × 4097x8193 = 129x8193
+// Expected result: 1.0 × 0.4 × 4097 = 1638.8
+func.func @matmul_129x8193x4097_f32_f32() {
+  %lhs = util.unfoldable_constant dense<1.0> : tensor<129x4097xf32>
+  %rhs = util.unfoldable_constant dense<0.4> : tensor<4097x8193xf32>
+  %c0 = arith.constant 0.0 : f32
+  %init = tensor.empty() : tensor<129x8193xf32>
+  %CC = linalg.fill ins(%c0 : f32) outs(%init : tensor<129x8193xf32>) -> tensor<129x8193xf32>
+  %D = linalg.matmul ins(%lhs, %rhs: tensor<129x4097xf32>, tensor<4097x8193xf32>)
+                    outs(%CC: tensor<129x8193xf32>) -> tensor<129x8193xf32>
+  return
+}
+
+// (11) 129x8193 × 8193x4097 = 129x4097
+// Expected result: 1.0 × 0.4 × 8193 = 3277.2
+func.func @matmul_129x4097x8193_f32_f32() {
+  %lhs = util.unfoldable_constant dense<1.0> : tensor<129x8193xf32>
+  %rhs = util.unfoldable_constant dense<0.4> : tensor<8193x4097xf32>
+  %c0 = arith.constant 0.0 : f32
+  %init = tensor.empty() : tensor<129x4097xf32>
+  %CC = linalg.fill ins(%c0 : f32) outs(%init : tensor<129x4097xf32>) -> tensor<129x4097xf32>
+  %D = linalg.matmul ins(%lhs, %rhs: tensor<129x8193xf32>, tensor<8193x4097xf32>)
+                    outs(%CC: tensor<129x4097xf32>) -> tensor<129x4097xf32>
+  return
+}
+
+// (12) 4097x4097 × 4097x4097 = 4097x4097
+// Expected result: 1.0 × 0.4 × 4097 = 1638.8
+func.func @matmul_4097x4097x4097_f32_f32() {
+  %lhs = util.unfoldable_constant dense<1.0> : tensor<4097x4097xf32>
+  %rhs = util.unfoldable_constant dense<0.4> : tensor<4097x4097xf32>
+  %c0 = arith.constant 0.0 : f32
+  %init = tensor.empty() : tensor<4097x4097xf32>
+  %CC = linalg.fill ins(%c0 : f32) outs(%init : tensor<4097x4097xf32>) -> tensor<4097x4097xf32>
+  %D = linalg.matmul ins(%lhs, %rhs: tensor<4097x4097xf32>, tensor<4097x4097xf32>)
+                    outs(%CC: tensor<4097x4097xf32>) -> tensor<4097x4097xf32>
+  return
+}
