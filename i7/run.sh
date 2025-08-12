@@ -23,7 +23,8 @@ fi
 
 # Construct module and function names based on dimensions
 model="llama"
-TOOLDIR="/home/jin/iree-build/tools"
+#TOOLDIR="/home/jin/iree-build/tools"
+TOOLDIR="/media/jin/nvme1n1p1/iree-build/tools"
 
 iterations=1000
 module_file="${model}.vmfb"

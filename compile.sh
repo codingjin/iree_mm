@@ -5,6 +5,7 @@ CPU="r9"
 #CPU="i7"
 
 TOOLDIR="/home/jin/iree-build/tools"
+#TOOLDIR="/media/jin/nvme1n1p1/iree-build/tools"
 COMPILEOPT="--iree-hal-target-backends=llvm-cpu --iree-llvmcpu-target-cpu-features=host  --mlir-print-ir-after-all --mlir-print-ir-before-all --mlir-disable-threading --mlir-print-local-scope"
 #COMPILEOPT="--iree-hal-target-backends=llvm-cpu --iree-llvmcpu-target-cpu-features=host  --mlir-print-ir-after-all --mlir-print-ir-before-all --mlir-print-local-scope"
 MLIRFILE="llama_linalg_matmul.mlir"
