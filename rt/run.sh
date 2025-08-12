@@ -72,7 +72,7 @@ gflops=$(echo "($gflops_raw + 0.5) / 1" | bc)
 #echo "Total real time: $total_seconds seconds"
 #echo "Average time per iteration: $(echo "scale=6; $total_seconds / $iterations" | bc -l) seconds"
 #echo "Raw GFLOPS (per iteration): $gflops_raw"
-printf "GFLOPS: $gflops\n"
+printf "GFLOPS: $gflops\n\n\n"
 
 # Optional: Show the raw timing output for verification
 #echo ""
