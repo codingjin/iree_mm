@@ -1,6 +1,11 @@
 #!/bin/bash
 
+#CPU="r9"
+#CPU="rt"
 CPU="i7"
+
+#TOOLDIR="/home/jin/iree-build/tools"
+TOOLDIR="/media/jin/nvme1n1p1/iree-build/tools"
 # Check if correct number of arguments provided
 if [ $# -ne 3 ]; then
     echo "Usage: $0 <M> <N> <K>"
@@ -23,48 +28,55 @@ fi
 
 # Construct module and function names based on dimensions
 model="llama"
-#TOOLDIR="/home/jin/iree-build/tools"
-TOOLDIR="/media/jin/nvme1n1p1/iree-build/tools"
-
 iterations=1000
 module_file="${model}.vmfb"
 function_name="matmul_${M}x${N}x${K}_f32_f32"
+verification_function_name="matmul_${M}x${N}x${K}_f32_f32_with_verification"
 
 echo "$CPU Problem Size: M=$M N=$N K=$K"
 echo "module: $module_file"
 echo "function: $function_name"
 
-#echo "100 Warmups ..."
-for ((i=1; i<=100; i++)); do
-    "$TOOLDIR"/iree-run-module --module="$module_file" --function="$function_name" > /dev/null 2>&1
-done
-#echo "Warmup done"
-
-# Run the timing and capture output
-timing_output=$( { time {
-    for ((i=1; i<=iterations; i++)); do
+sum_seconds=0.0
+# 10 * 100
+for ((r=1; r<=10; r++)); do
+    #echo "10 Warmups ..."
+    for ((i=1; i<=10; i++)); do
         "$TOOLDIR"/iree-run-module --module="$module_file" --function="$function_name" > /dev/null 2>&1
     done
-}; } 2>&1 )
+    #echo "Warmup done"
 
-# Extract real time from output (format: "real 0m45.123s")
-real_time=$(echo "$timing_output" | grep "real" | awk '{print $2}')
+    # Run the timing and capture output
+    timing_output=$( { time {
+        for ((i=1; i<=100; i++)); do
+            "$TOOLDIR"/iree-run-module --module="$module_file" --function="$function_name" > /dev/null 2>&1
+        done
+    }; } 2>&1 )
 
-# Convert time to seconds (handle format like "0m45.123s")
-if [[ $real_time == *"m"* ]]; then
-    # Format: XmY.Zs
-    minutes=$(echo "$real_time" | sed 's/m.*//')
-    seconds=$(echo "$real_time" | sed 's/.*m//' | sed 's/s//')
-    total_seconds=$(echo "$minutes * 60 + $seconds" | bc -l)
-else
-    # Format: Y.Zs (no minutes)
-    total_seconds=$(echo "$real_time" | sed 's/s//')
-fi
+    # Verification failure information would display as error message!
+    "$TOOLDIR"/iree-run-module --module="$module_file" --function="$verification_function_name" > /dev/null 
+
+    # Extract real time from output (format: "real 0m45.123s")
+    real_time=$(echo "$timing_output" | grep "real" | awk '{print $2}')
+
+    # Convert time to seconds (handle format like "0m45.123s")
+    if [[ $real_time == *"m"* ]]; then
+        # Format: XmY.Zs
+        minutes=$(echo "$real_time" | sed 's/m.*//')
+        seconds=$(echo "$real_time" | sed 's/.*m//' | sed 's/s//')
+        total_seconds=$(echo "$minutes * 60 + $seconds" | bc -l)
+    else
+        # Format: Y.Zs (no minutes)
+        total_seconds=$(echo "$real_time" | sed 's/s//')
+    fi
+
+    sum_seconds=$(echo "$sum_seconds + $total_seconds" | bc -l)
+    #printf "sum_seconds=$sum_seconds total_seconds=$total_seconds\n"
+done
 
 # Calculate GFLOPS
-# Formula: GFLOPS = 2.0 * M * N * K / realtime / 1e9
-# Note: For 1000 iterations, we need to divide by iteration count for per-iteration GFLOPS
-gflops_raw=$(echo "scale=3; 2.0 * $M * $N * $K * $iterations / $total_seconds / 1000000000" | bc -l)
+# Formula: GFLOPS = 2.0 * M * N * K * iterations / sum_realtime / 1e9
+gflops_raw=$(echo "scale=3; 2.0 * $M * $N * $K * $iterations / $sum_seconds / 1000000000" | bc -l)
 gflops=$(echo "($gflops_raw + 0.5) / 1" | bc)
 
 # Display results
