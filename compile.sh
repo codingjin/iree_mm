@@ -16,6 +16,10 @@ COMPILEOPT="--iree-hal-target-device=local --iree-hal-target-backends=llvm-cpu -
 #COMPILEOPT="--iree-hal-target-device=local --iree-hal-target-backends=llvm-cpu --iree-llvmcpu-target-cpu=corei7 --iree-llvmcpu-target-cpu-features=host --iree-llvmcpu-enable-ukernels=all --mlir-print-ir-after-all --mlir-print-ir-before-all --mlir-print-local-scope --mlir-disable-threading"
 #COMPILEOPT="--iree-hal-target-device=local --iree-hal-target-backends=llvm-cpu --iree-llvmcpu-target-cpu=corei7 --iree-llvmcpu-target-cpu-features=host --iree-llvmcpu-enable-ukernels=all --mlir-print-ir-after-all --mlir-print-ir-before-all --mlir-print-local-scope"
 
+## For rt
+#COMPILEOPT="--iree-hal-target-device=local --iree-hal-target-backends=llvm-cpu --iree-llvmcpu-target-cpu=znver2 --iree-llvmcpu-target-cpu-features=host --iree-llvmcpu-enable-ukernels=all --mlir-print-ir-after-all --mlir-print-ir-before-all --mlir-print-local-scope --mlir-disable-threading"
+#COMPILEOPT="--iree-hal-target-device=local --iree-hal-target-backends=llvm-cpu --iree-llvmcpu-target-cpu=znver2 --iree-llvmcpu-target-cpu-features=host --iree-llvmcpu-enable-ukernels=all --mlir-print-ir-after-all --mlir-print-ir-before-all --mlir-print-local-scope"
+
 MODEL="llama"
 MLIRFILE="${MODEL}_linalg_matmul.mlir"
 OUTFILE="${CPU}/${MODEL}.vmfb"
