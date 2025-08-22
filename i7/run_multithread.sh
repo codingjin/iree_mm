@@ -30,7 +30,7 @@ fi
 # Construct module and function names based on dimensions
 model="llama"
 iterations=1000
-module_file="${model}.vmfb"
+module_file="${model}_multithread.vmfb"
 function_name="matmul_${M}x${N}x${K}_f32_f32"
 verification_function_name="matmul_${M}x${N}x${K}_f32_f32_with_verification"
 
